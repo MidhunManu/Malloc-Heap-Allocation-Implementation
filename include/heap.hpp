@@ -7,5 +7,5 @@ struct Heap
     std::size_t capacity;
 };
 
-struct Heap createHeap(Heap& heap);
-void destroyHeap();
+struct Heap createHeap();
+void destroyHeap(Heap& heap);

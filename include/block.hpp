@@ -13,13 +13,6 @@ struct BlockHeader
     BlockState state;
 };
 
-struct BlockPlayload
-{
-    
-};
-
-struct Block
-{
-    BlockHeader header;
-    BlockPlayload payload;    
-};
+BlockHeader* createBlock(std::byte* memory, std::size_t payload_size);
+std::byte* getPlayload(BlockHeader* header);
+BlockHeader* getNextBlock(BlockHeader* header);
