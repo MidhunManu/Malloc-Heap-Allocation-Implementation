@@ -11,6 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(SOURCE_FILES
     src/main.cpp
+    src/heap.cpp
 )
 
 add_executable(allocator ${SOURCE_FILES})
