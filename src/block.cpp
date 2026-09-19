@@ -5,7 +5,7 @@
 
 std::expected<BlockHeader*, AllocatorError> createBlock(std::byte* memory, std::size_t size)
 {
-    if ((size + sizeof(BlockHeader*) > HeapConfig::capacity))
+    if (size > HeapConfig::capacity - sizeof(BlockHeader))
     {
         return std::unexpected(AllocatorError::OutOFMemory);
     }
