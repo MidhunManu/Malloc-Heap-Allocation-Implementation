@@ -1,5 +1,7 @@
 #pragma once
 #include <cstddef>
+#include <expected>
+#include "error_codes.hpp"
 
 enum class BlockState
 {
@@ -13,6 +15,6 @@ struct BlockHeader
     BlockState state;
 };
 
-BlockHeader* createBlock(std::byte* memory, std::size_t payload_size);
+std::expected<BlockHeader*, AllocatorError> createBlock(std::byte* memory, std::size_t payload_size);
 std::byte* getPlayload(BlockHeader* header);
 BlockHeader* getNextBlock(BlockHeader* header);

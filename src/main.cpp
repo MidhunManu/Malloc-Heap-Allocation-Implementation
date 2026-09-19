@@ -6,7 +6,13 @@
 int main(int argc, char const *argv[])
 {
     Heap heap = createHeap();
-    BlockHeader* block = createBlock(heap.memory, 128);
+    auto result = createBlock(heap.memory, 10000);
+    if (!result)
+    {
+        std::cerr << "Failed to create block";
+        exit(static_cast<int>(result.error()));
+    }
+    BlockHeader* block = *result;
     std::byte* payload = getPlayload(block);
 
     #ifdef DEBUG
