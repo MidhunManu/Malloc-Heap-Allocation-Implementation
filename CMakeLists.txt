@@ -18,3 +18,7 @@ set(SOURCE_FILES
 add_executable(allocator ${SOURCE_FILES})
 
 target_include_directories(allocator PRIVATE include)
+
+if(DEBUG)
+    target_compile_definitions(allocator PRIVATE DEBUG)
+endif()

@@ -1,7 +1,15 @@
+#include <cstdlib>
+#include <iostream>
 #include "../include/block.hpp"
+#include "../include/config.hpp"
+#include "../include/error_codes.hpp"
 
 BlockHeader* createBlock(std::byte* memory, std::size_t size)
 {
+    if ((size + sizeof(BlockHeader*) > HeapConfig::capacity))
+    {
+        std::exit(static_cast<int>(AllocatorError::OutOFMemory));
+    }
     auto* header = reinterpret_cast<BlockHeader*>(memory);
     header->size = size;
     header->state = BlockState::FREE;
