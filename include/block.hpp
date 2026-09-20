@@ -18,3 +18,5 @@ struct BlockHeader
 std::expected<BlockHeader*, AllocatorError> createBlock(std::byte* memory, std::size_t payload_size);
 std::byte* getPlayload(BlockHeader* header);
 BlockHeader* getNextBlock(BlockHeader* header);
+std::expected<void*, AllocatorError> allocate(FreeList& free_list, std::size_t size);
+void deallocate(BlockHeader* headeer);
