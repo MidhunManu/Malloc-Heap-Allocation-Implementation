@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <expected>
 #include "error_codes.hpp"
+#include "free_list.hpp"
 
 enum class BlockState
 {

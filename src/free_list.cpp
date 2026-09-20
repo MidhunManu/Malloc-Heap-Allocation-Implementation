@@ -1,4 +1,7 @@
 #include "../include/free_list.hpp"
+#include <cstddef>
+#include "../include/free_list.hpp"
+#include "../include/block.hpp"
 
 void clearList(FreeList& list)
 {
