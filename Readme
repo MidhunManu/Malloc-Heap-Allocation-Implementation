@@ -1,0 +1,15 @@
+Address       Size       Component
+────────────────────────────────────────────
+0x1000        16 B       BlockHeader
+              │
+              │ +16
+              ▼
+0x1010        16 B       FreeListNode
+              │
+              │ +16
+              ▼
+0x1020        48 B       remaining free payload
+              │
+              │
+              ▼
+0x1050        ─          end of block
