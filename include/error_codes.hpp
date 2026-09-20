@@ -8,6 +8,7 @@ enum class AllocatorError
     OutOFMemory,
     InvalidSize,
     InvalidArgument,
+    NoFitFound,
 };
 
 template <typename T, typename E>

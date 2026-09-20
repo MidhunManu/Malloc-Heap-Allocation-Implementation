@@ -1,5 +1,6 @@
 #pragma once
-#include "block.hpp"
+
+struct BlockHeader;
 
 struct FreeListNode
 {

@@ -1,19 +1,20 @@
 #include <gtest/gtest.h>
 #include "../include/heap.hpp"
 #include "../include/free_list.hpp"
+#include "../include/block.hpp"
 
 namespace {
    Heap heap = createHeap();
    BlockHeader* blk1 = unwrap(createBlock(heap.memory, 32));
-   auto* blk2_memory = reinterpret_cast<std::byte*>(blk1) + blk1->size;
-   BlockHeader* blk2 = unwrap(createBlock(blk2_memory, 32));
-   auto* blk3_memory = reinterpret_cast<std::byte*>(blk2) + blk2->size;
-   BlockHeader* blk3 = unwrap(createBlock(blk3_memory, 32));
+   BlockHeader* blk2 = unwrap(createBlock(reinterpret_cast<std::byte*>(getNextBlock(blk1)), 64));
+   BlockHeader* blk3 = unwrap(createBlock(reinterpret_cast<std::byte*>(getNextBlock(blk2)), 16));
+
+   FreeList list{};
 }
 
 TEST(FREE_LIST_TEST, HEAD_PREV_EQ_NULL)
 {
-    auto* link1 = reinterpret_cast<FreeListNode*>(blk1);
+    auto* link1 = reinterpret_cast<FreeListNode*>(blk2);
 
     auto* links = link1;
 
@@ -22,7 +23,6 @@ TEST(FREE_LIST_TEST, HEAD_PREV_EQ_NULL)
 
 TEST(FREE_LIST_TEST, ALL_BLOCK_IN_FREE_LIST_ARE_FREE)
 {
-    FreeList list{};
     insertAtHead(list, blk1);
     insertAtHead(list, blk2);
     insertAtHead(list, blk3);
@@ -36,4 +36,21 @@ TEST(FREE_LIST_TEST, ALL_BLOCK_IN_FREE_LIST_ARE_FREE)
         EXPECT_EQ(header->state, BlockState::FREE);
         node = node->next;
     }
+}
+
+TEST(FREE_LIST_TEST, ALLOCATE_MEMORY)
+{
+    insertAtHead(list, blk3);
+    insertAtHead(list, blk2);
+    insertAtHead(list, blk1);
+
+    void* payload_allocation = unwrap(allocate(list, 32));
+    auto* header = reinterpret_cast<BlockHeader*>(
+        reinterpret_cast<std::byte*>(payload_allocation) - sizeof(BlockHeader)
+    );
+
+    EXPECT_EQ(header, blk1);
+    EXPECT_EQ(header->state, BlockState::ALLOCATED);
+    EXPECT_EQ(header->size, 32);
+    EXPECT_EQ(list.head, blk2);
 }
