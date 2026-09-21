@@ -43,24 +43,32 @@ std::expected<void*, AllocatorError> allocate(FreeList& free_list, std::size_t s
     auto* headNode = reinterpret_cast<FreeListNode*>(getPlayload(head));
 
     auto* curr = headNode;
-
+    BlockHeader* selectedHeader = nullptr;
+    size_t max = 0;
     while (curr != nullptr)
     {
         auto* header = reinterpret_cast<BlockHeader*>(
             reinterpret_cast<std::byte*>(curr) - sizeof(FreeListNode)
         );
 
-        if (header->size >= size)
+        if (header->size > max && header->size >= size)
         {
-            removeNode(free_list, header);
-            header->state = BlockState::ALLOCATED;
-            auto* payload = reinterpret_cast<std::byte*>(getPlayload(header));
-            return payload;
+            max = header->size;
+            selectedHeader = header;
         }
+
         curr = curr->next;
     }
 
-    return std::unexpected(AllocatorError::NoFitFound);
+    if (selectedHeader == nullptr)
+    {
+        return std::unexpected(AllocatorError::NoFitFound);
+    }
+
+    removeNode(free_list, selectedHeader);
+    selectedHeader->state = BlockState::ALLOCATED;
+    auto* payload = reinterpret_cast<std::byte*>(getPlayload(selectedHeader));
+    return payload;
 }
 
 void deallocate(BlockHeader* headeer)
