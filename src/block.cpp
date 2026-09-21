@@ -34,7 +34,7 @@ BlockHeader* getNextBlock(BlockHeader* header)
 
 std::expected<void*, AllocatorError> allocate(FreeList& free_list, std::size_t size)
 {
-    if (size > HeapConfig::capacity || size <= 0)
+    if (size > HeapConfig::capacity)
     {
         return std::unexpected(AllocatorError::InvalidSize);
     }
@@ -69,6 +69,31 @@ std::expected<void*, AllocatorError> allocate(FreeList& free_list, std::size_t s
     selectedHeader->state = BlockState::ALLOCATED;
     auto* payload = reinterpret_cast<std::byte*>(getPlayload(selectedHeader));
     return payload;
+}
+
+std::expected<BlockHeader*, AllocatorError> splitBlock(BlockHeader* block, std::size_t size)
+{
+    if (block->state == BlockState::ALLOCATED)
+    {
+        return std::unexpected(AllocatorError::InvalidArgument);
+    }
+
+    auto* blockEnd = reinterpret_cast<std::byte*>(getPlayload(block)) + block->size;
+
+    size_t remaining = block->size - size - sizeof(BlockHeader) - sizeof(FreeListNode);
+
+    if (remaining < HeapConfig::min_free_block_size)
+    {
+        return std::unexpected(AllocatorError::InvalidSize);
+    }
+
+    auto* newHeaderAddress = blockEnd - size - sizeof(BlockHeader);
+    auto* newHeader = reinterpret_cast<BlockHeader*>(newHeaderAddress);
+    block->size -= size + sizeof(BlockHeader);
+    newHeader->size = size;
+    newHeader->state = BlockState::ALLOCATED;
+
+    return newHeader;
 }
 
 void deallocate(BlockHeader* headeer)

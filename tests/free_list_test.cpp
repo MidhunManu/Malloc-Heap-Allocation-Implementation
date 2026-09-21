@@ -56,3 +56,25 @@ TEST(FREE_LIST_TEST, ALLOCATE_MEMORY)
     EXPECT_EQ(header->size, 64);
     EXPECT_EQ(list.head, blk1);
 }
+TEST(FREE_LIST_TEST, SPLIT_BLOCK)
+{
+    clearList(list);
+
+    blk2->state = BlockState::FREE;
+    blk2->size = 64;
+
+    BlockHeader* newBlock = unwrap(splitBlock(blk2, 10));
+
+    EXPECT_EQ(blk2->state, BlockState::FREE);
+    EXPECT_EQ(blk2->size, 64 - 10 - sizeof(BlockHeader));
+
+    EXPECT_EQ(newBlock->state, BlockState::ALLOCATED);
+    EXPECT_EQ(newBlock->size, 10);
+
+    EXPECT_EQ(
+        reinterpret_cast<std::byte*>(newBlock),
+        reinterpret_cast<std::byte*>(blk2)
+            + sizeof(BlockHeader)
+            + blk2->size
+    );
+}

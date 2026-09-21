@@ -21,3 +21,4 @@ std::byte* getPlayload(BlockHeader* header);
 BlockHeader* getNextBlock(BlockHeader* header);
 std::expected<void*, AllocatorError> allocate(FreeList& free_list, std::size_t size);
 void deallocate(BlockHeader* headeer);
+std::expected<BlockHeader*, AllocatorError> splitBlock(BlockHeader* block, size_t size);
