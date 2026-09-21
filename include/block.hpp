@@ -20,5 +20,5 @@ std::expected<BlockHeader*, AllocatorError> createBlock(std::byte* memory, std::
 std::byte* getPlayload(BlockHeader* header);
 BlockHeader* getNextBlock(BlockHeader* header);
 std::expected<void*, AllocatorError> allocate(FreeList& free_list, std::size_t size);
-std::expected<void, AllocatorError> deallocate(BlockHeader* header);
+std::expected<void, AllocatorError> deallocate(FreeList& list, BlockHeader* header);
 std::expected<BlockHeader*, AllocatorError> splitBlock(BlockHeader* block, size_t size);
