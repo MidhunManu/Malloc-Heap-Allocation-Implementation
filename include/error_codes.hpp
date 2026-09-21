@@ -9,6 +9,7 @@ enum class AllocatorError
     InvalidSize,
     InvalidArgument,
     NoFitFound,
+    InvalidState,
 };
 
 template <typename T, typename E>

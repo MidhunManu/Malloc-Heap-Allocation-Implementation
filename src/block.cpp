@@ -96,7 +96,14 @@ std::expected<BlockHeader*, AllocatorError> splitBlock(BlockHeader* block, std::
     return newHeader;
 }
 
-void deallocate(BlockHeader* headeer)
+std::expected<void, AllocatorError> deallocate(FreeList& list, BlockHeader* header)
 {
+    if (header == nullptr || header->state != BlockState::ALLOCATED)
+    {
+        return std::unexpected(AllocatorError::InvalidState);
+    }
 
+    header->state = BlockState::FREE;
+    insertAtHead(list, header);
+    return {};
 }
