@@ -23,6 +23,7 @@ TEST(FREE_LIST_TEST, HEAD_PREV_EQ_NULL)
 
 TEST(FREE_LIST_TEST, ALL_BLOCK_IN_FREE_LIST_ARE_FREE)
 {
+    clearList(list);
     insertAtHead(list, blk1);
     insertAtHead(list, blk2);
     insertAtHead(list, blk3);
@@ -40,6 +41,7 @@ TEST(FREE_LIST_TEST, ALL_BLOCK_IN_FREE_LIST_ARE_FREE)
 
 TEST(FREE_LIST_TEST, ALLOCATE_MEMORY)
 {
+    clearList(list);
     insertAtHead(list, blk3);
     insertAtHead(list, blk2);
     insertAtHead(list, blk1);
@@ -49,8 +51,8 @@ TEST(FREE_LIST_TEST, ALLOCATE_MEMORY)
         reinterpret_cast<std::byte*>(payload_allocation) - sizeof(BlockHeader)
     );
 
-    EXPECT_EQ(header, blk1);
+    EXPECT_EQ(header, blk2);
     EXPECT_EQ(header->state, BlockState::ALLOCATED);
-    EXPECT_EQ(header->size, 32);
-    EXPECT_EQ(list.head, blk2);
+    EXPECT_EQ(header->size, 64);
+    EXPECT_EQ(list.head, blk1);
 }
