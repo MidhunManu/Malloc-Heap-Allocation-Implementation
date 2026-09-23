@@ -113,6 +113,12 @@ void removeNode(FreeList& list, BlockHeader* block)
     node->next = nullptr;
 }
 
+void deleteNode(FreeList& list, BlockHeader* block)
+{
+    removeNode(list, block);
+    delete block;
+}
+
 void removeTail(FreeList& list)
 {
     if (list.head == nullptr)

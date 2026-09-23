@@ -19,3 +19,4 @@ void updateHeadPrev(FreeList& list, BlockHeader* block);
 void removeHead(FreeList& list);
 void removeNode(FreeList& list, BlockHeader* block);
 void removeTail(FreeListNode& list);
+void deleteNode(FreeList& list, BlockHeader* block);

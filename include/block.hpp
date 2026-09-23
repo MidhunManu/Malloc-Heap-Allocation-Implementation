@@ -22,3 +22,4 @@ BlockHeader* getNextBlock(BlockHeader* header);
 std::expected<void*, AllocatorError> allocate(FreeList& free_list, std::size_t size);
 std::expected<void, AllocatorError> deallocate(FreeList& list, BlockHeader* header);
 std::expected<BlockHeader*, AllocatorError> splitBlock(BlockHeader* block, size_t size);
+std::expected<BlockHeader*, AllocatorError> coalesce(FreeList& list, BlockHeader* block1);

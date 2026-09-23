@@ -107,3 +107,23 @@ std::expected<void, AllocatorError> deallocate(FreeList& list, BlockHeader* head
     insertAtHead(list, header);
     return {};
 }
+
+std::expected<BlockHeader*, AllocatorError> coalesce(FreeList& list, BlockHeader* block)
+{
+    auto* currentNode = reinterpret_cast<FreeListNode*>(getPlayload(block));
+    auto* nextNode = currentNode->next;
+    auto* nextHeader = reinterpret_cast<BlockHeader*>(
+        reinterpret_cast<std::byte*>(nextNode) - sizeof(FreeListNode)
+    );
+
+    if (nextHeader->state != BlockState::FREE)
+    {
+        return std::unexpected(AllocatorError::InvalidState);
+    }
+
+    block->size += nextHeader->size;
+    currentNode->next = nextNode->next;
+    nextNode->next->prev = currentNode;
+
+    deleteNode(list, nextHeader);
+}
